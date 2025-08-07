@@ -4,32 +4,28 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
-import java.util.InputMismatchException; 
+import java.util.InputMismatchException;
+
 public final class ValidacaoUtil {
 
     private ValidacaoUtil() {
     }
 
     public static boolean validarCPF(String cpf) {
-        if (cpf == null) {
-            return false;
+        if (cpf == null || cpf.trim().isEmpty()) {
+            throw new IllegalArgumentException("O CPF para validação не pode ser nulo ou vazio.");
         }
 
         String cpfLimpo = cpf.replaceAll("[.\\-]", "");
 
-        if (cpfLimpo.equals("00000000000") || cpfLimpo.equals("11111111111") ||
-            cpfLimpo.equals("22222222222") || cpfLimpo.equals("33333333333") ||
-            cpfLimpo.equals("44444444444") || cpfLimpo.equals("55555555555") ||
-            cpfLimpo.equals("66666666666") || cpfLimpo.equals("77777777777") ||
-            cpfLimpo.equals("88888888888") || cpfLimpo.equals("99999999999") ||
-            (cpfLimpo.length() != 11)) {
+        if (cpfLimpo.length() != 11 || cpfLimpo.matches("(\\d)\\1{10}")) {
             return false;
         }
 
-        char dig10, dig11;
-        int sm, i, r, num, peso;
-
         try {
+            char dig10, dig11;
+            int sm, i, r, num, peso;
+
             sm = 0;
             peso = 10;
             for (i = 0; i < 9; i++) {
@@ -66,7 +62,7 @@ public final class ValidacaoUtil {
 
     public static boolean validarData(String data) {
         if (data == null || data.trim().isEmpty()) {
-            return false;
+            throw new IllegalArgumentException("A data para validação не pode ser nula ou vazia.");
         }
         
         try {
@@ -80,9 +76,23 @@ public final class ValidacaoUtil {
     }
 
     public static boolean validarNome(String nome) {
-        if (nome == null || nome.trim().length() < 3 || nome.trim().length() > 100) {
+        if (nome == null || nome.trim().isEmpty()) {
+            throw new IllegalArgumentException("O nome não pode ser nulo ou vazio.");
+        }
+        
+        if (nome.trim().length() < 3 || nome.trim().length() > 100) {
             return false;
         }
         return nome.matches("^[\\p{L} .'-]+$");
+    }
+    
+  
+    public static boolean isDataNascimentoValida(LocalDate dataNascimento) {
+        return !dataNascimento.isAfter(LocalDate.now());
+    }
+
+   
+    public static boolean isDataExameValida(LocalDate dataExame) {
+        return !dataExame.isBefore(LocalDate.now());
     }
 }

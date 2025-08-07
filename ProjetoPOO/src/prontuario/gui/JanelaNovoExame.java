@@ -17,6 +17,7 @@ import prontuario.dao.ExameDAO;
 import prontuario.dao.PacienteDAO;
 import prontuario.model.Exame;
 import prontuario.model.Paciente;
+import prontuario.util.ValidacaoUtil;
 
 public class JanelaNovoExame extends JDialog {
 
@@ -97,20 +98,26 @@ public class JanelaNovoExame extends JDialog {
                 return;
             }
 
+
             try {
                 Exame exame = new Exame();
                 exame.setPaciente(pacienteSelecionado);
                 exame.setDescricao(descricao);
                 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                exame.setDataExame(LocalDate.parse(dataStr, formatter));
+                LocalDate dataExame = LocalDate.parse(dataStr, formatter);
+
+                                if (!ValidacaoUtil.isDataExameValida(dataExame)) {
+                    JOptionPane.showMessageDialog(this, "A data do exame não pode ser no passado.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                exame.setDataExame(dataExame);
 
                 exameDAO.salvar(exame);
                 
-                JOptionPane.showMessageDialog(this, "Exame salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                dispose();
             } catch (DateTimeParseException ex) {
-                JOptionPane.showMessageDialog(this, "Formato de data inválido. Use DD/MM/AAAA.", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
+                
             }
         });
     }

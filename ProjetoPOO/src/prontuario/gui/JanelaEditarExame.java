@@ -4,12 +4,24 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-import javax.swing.*;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+
 import prontuario.dao.ExameDAO;
 import prontuario.dao.PacienteDAO;
 import prontuario.model.Exame;
 import prontuario.model.Paciente;
+import prontuario.util.ValidacaoUtil;
 
 public class JanelaEditarExame extends JDialog {
 
@@ -108,32 +120,42 @@ public class JanelaEditarExame extends JDialog {
                 return;
             }
 
-            try {
-                Exame exame = new Exame();
-                exame.setId(idExameSelecionado);
-                exame.setPaciente((Paciente) comboPacientes.getSelectedItem());
-                exame.setDescricao(areaDescricao.getText());
+         
+                Paciente pacienteSelecionado = (Paciente) comboPacientes.getSelectedItem();
+                String dataStr = txtDataExame.getText();
+                String descricao = areaDescricao.getText();
                 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                exame.setDataExame(LocalDate.parse(txtDataExame.getText(), formatter));
-                
-                exameDAO.atualizar(exame);
-                
-                JOptionPane.showMessageDialog(this, "Exame atualizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                
-                carregarDadosTabela();
-                
-                txtDataExame.setText("");
-                areaDescricao.setText("");
-                comboPacientes.setSelectedIndex(-1);
-                idExameSelecionado = 0;
+                if (pacienteSelecionado == null || descricao.trim().isEmpty() || dataStr.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Selecione um paciente e preencha todos os campos.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
-            } catch (DateTimeParseException ex) {
-                JOptionPane.showMessageDialog(this, "Formato de data inválido. Use DD/MM/AAAA.", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-    }
+                try {
+                    Exame exame = new Exame();
+                    exame.setPaciente(pacienteSelecionado);
+                    exame.setDescricao(descricao);
+                    
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    LocalDate dataExame = LocalDate.parse(dataStr, formatter);
 
+                    if (!ValidacaoUtil.isDataExameValida(dataExame)) {
+                        JOptionPane.showMessageDialog(this, "A data do exame não pode ser no passado.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    exame.setDataExame(dataExame);
+
+                    exameDAO.salvar(exame);
+                    
+                    JOptionPane.showMessageDialog(this, "Exame salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                    dispose();
+
+                } catch (DateTimeParseException ex) {
+                    JOptionPane.showMessageDialog(this, "Formato de data inválido. Use DD/MM/AAAA.", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+            }        ;
+    
     private void carregarPacientesCombo() {
         List<Paciente> pacientes = pacienteDAO.listarTodos();
         for (Paciente p : pacientes) {

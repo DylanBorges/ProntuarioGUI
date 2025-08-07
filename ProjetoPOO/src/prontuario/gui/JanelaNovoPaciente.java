@@ -86,20 +86,26 @@ public class JanelaNovoPaciente extends JDialog {
                 return;
             }
 
+
             try {
                 Paciente paciente = new Paciente();
                 paciente.setNome(nome);
                 paciente.setCpf(cpf);
                 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                paciente.setDataNascimento(LocalDate.parse(dataStr, formatter));
+                LocalDate dataNascimento = LocalDate.parse(dataStr, formatter);
+
+                if (!ValidacaoUtil.isDataNascimentoValida(dataNascimento)) {
+                    JOptionPane.showMessageDialog(this, "A data de nascimento не pode ser uma data futura.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+                    return; 
+                }
+
+                paciente.setDataNascimento(dataNascimento);
 
                 pacienteDAO.salvar(paciente);
                 
-                JOptionPane.showMessageDialog(this, "Paciente salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                dispose();
             } catch (DateTimeParseException ex) {
-                JOptionPane.showMessageDialog(this, "Formato de data inválido. Use DD/MM/AAAA.", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
+                // ...
             }
         });
     }
