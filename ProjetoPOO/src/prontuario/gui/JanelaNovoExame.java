@@ -115,6 +115,8 @@ public class JanelaNovoExame extends JDialog {
                 exame.setDataExame(dataExame);
 
                 exameDAO.salvar(exame);
+                JOptionPane.showMessageDialog(this, "Exame cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                dispose();
                 
             } catch (DateTimeParseException ex) {
                 

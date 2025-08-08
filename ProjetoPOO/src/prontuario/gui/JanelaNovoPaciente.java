@@ -103,7 +103,9 @@ public class JanelaNovoPaciente extends JDialog {
                 paciente.setDataNascimento(dataNascimento);
 
                 pacienteDAO.salvar(paciente);
-                
+              
+                JOptionPane.showMessageDialog(this, "Paciente cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                dispose();
             } catch (DateTimeParseException ex) {
                 // ...
             }

@@ -13,6 +13,7 @@ public class JanelaLocalizarPaciente extends JDialog {
     private ButtonGroup grupoRadio;
     private JTextField txtBusca;
     private JButton btnPesquisar;
+    private JButton btnSair;
     private JTable tabelaResultados;
     private DefaultTableModel modeloTabela;
     private PacienteDAO pacienteDAO;
@@ -22,7 +23,7 @@ public class JanelaLocalizarPaciente extends JDialog {
 
         this.pacienteDAO = new PacienteDAO();
         
-        setSize(500, 350);
+        setSize(500, 380);
         setLayout(null);
         setLocationRelativeTo(owner);
         
@@ -46,6 +47,13 @@ public class JanelaLocalizarPaciente extends JDialog {
         btnPesquisar.setBounds(370, 50, 100, 25);
         add(btnPesquisar);
         
+        btnSair = new JButton("Sair");
+        btnSair.setBounds(250 + 100 + 10, 300, 100, 30);
+        add(btnSair);
+        btnSair.addActionListener(e -> dispose());
+
+        
+        
         String[] colunas = {"ID", "Nome", "CPF", "Data Nasc."};
         modeloTabela = new DefaultTableModel(colunas, 0);
         tabelaResultados = new JTable(modeloTabela);
@@ -66,7 +74,9 @@ public class JanelaLocalizarPaciente extends JDialog {
             
             atualizarTabela(resultado);
         });
+        
     }
+    
     
     private void atualizarTabela(List<Paciente> pacientes) {
         modeloTabela.setRowCount(0);
@@ -81,4 +91,6 @@ public class JanelaLocalizarPaciente extends JDialog {
             modeloTabela.addRow(rowData);
         }
     }
+    
+    
 }

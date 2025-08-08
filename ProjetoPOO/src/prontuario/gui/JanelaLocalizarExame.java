@@ -21,7 +21,7 @@ public class JanelaLocalizarExame extends JDialog {
 
         this.exameDAO = new ExameDAO();
         
-        setSize(500, 350);
+        setSize(500, 380);
         setLayout(null);
         setLocationRelativeTo(owner);
         
@@ -36,6 +36,13 @@ public class JanelaLocalizarExame extends JDialog {
         btnPesquisar = new JButton("Pesquisar");
         btnPesquisar.setBounds(370, 20, 100, 25);
         add(btnPesquisar);
+        
+        JButton btnSair = new JButton("Sair");
+        btnSair.setBounds(370, 300, 100, 30); 
+        add(btnSair);
+
+        btnSair.addActionListener(e -> dispose());
+
         
         String[] colunas = {"ID Exame", "Paciente", "Data", "Descrição"};
         modeloTabela = new DefaultTableModel(colunas, 0){

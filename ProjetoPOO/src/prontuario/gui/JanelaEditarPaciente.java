@@ -1,10 +1,12 @@
 package prontuario.gui;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import prontuario.dao.PacienteDAO;
 import prontuario.model.Paciente;
@@ -13,19 +15,16 @@ public class JanelaEditarPaciente extends JDialog {
 
     private JTable tabelaPacientes;
     private DefaultTableModel modeloTabela;
-    private JTextField txtNome;
-    private JTextField txtCpf;
-    private JTextField txtDataNascimento;
-    private JButton btnAtualizar;
+    private JButton btnDeletar;
+    private JButton btnSair;
     private PacienteDAO pacienteDAO;
-    private long idPacienteSelecionado;
-
+    
     public JanelaEditarPaciente(JFrame owner) {
-        super(owner, "Editar Paciente", true);
+        super(owner, "Deletar Paciente", true);
         
         this.pacienteDAO = new PacienteDAO();
         
-        setSize(600, 400);
+        setSize(500, 300);
         setLayout(null);
         setLocationRelativeTo(owner);
 
@@ -34,88 +33,48 @@ public class JanelaEditarPaciente extends JDialog {
         tabelaPacientes = new JTable(modeloTabela);
         
         JScrollPane scrollPane = new JScrollPane(tabelaPacientes);
-        scrollPane.setBounds(20, 20, 540, 150);
+        scrollPane.setBounds(20, 20, 440, 180);
         add(scrollPane);
-
-        JLabel lblNome = new JLabel("Nome:");
-        lblNome.setBounds(20, 190, 80, 25);
-        add(lblNome);
-
-        txtNome = new JTextField();
-        txtNome.setBounds(150, 190, 410, 25);
-        add(txtNome);
-
-        JLabel lblCpf = new JLabel("CPF:");
-        lblCpf.setBounds(20, 230, 80, 25);
-        add(lblCpf);
-
-        txtCpf = new JTextField();
-        txtCpf.setBounds(150, 230, 410, 25);
-        add(txtCpf);
         
-        JLabel lblDataNascimento = new JLabel("Data Nascimento:");
-        lblDataNascimento.setBounds(20, 270, 120, 25);
-        add(lblDataNascimento);
-
-        txtDataNascimento = new JTextField();
-        txtDataNascimento.setBounds(150, 270, 410, 25);
-        add(txtDataNascimento);
+        btnDeletar = new JButton("Deletar Selecionado");
+        btnDeletar.setBounds(150, 220, 180, 30);
+        add(btnDeletar);
         
-        btnAtualizar = new JButton("Atualizar");
-        btnAtualizar.setBounds(240, 320, 100, 30);
-        add(btnAtualizar);
+        btnSair = new JButton("Sair");
+        btnSair.setBounds(340, 220, 80, 30);
+        add(btnSair);
+        btnSair.addActionListener(e -> dispose());
         
         carregarDadosTabela();
 
-        tabelaPacientes.getSelectionModel().addListSelectionListener(e -> {
+        btnDeletar.addActionListener(e -> {
             int selectedRow = tabelaPacientes.getSelectedRow();
-            if (selectedRow != -1) {
-                idPacienteSelecionado = (long) modeloTabela.getValueAt(selectedRow, 0);
-                txtNome.setText((String) modeloTabela.getValueAt(selectedRow, 1));
-                txtCpf.setText((String) modeloTabela.getValueAt(selectedRow, 2));
-                
-                LocalDate data = (LocalDate) modeloTabela.getValueAt(selectedRow, 3);
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                txtDataNascimento.setText(data.format(formatter));
-            }
-        });
-
-        btnAtualizar.addActionListener(e -> {
-            if (idPacienteSelecionado == 0) {
-                JOptionPane.showMessageDialog(this, "Por favor, selecione um paciente na tabela.", "Nenhum Paciente Selecionado", JOptionPane.WARNING_MESSAGE);
+            
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Por favor, selecione um paciente na tabela para deletar.", "Nenhum Paciente Selecionado", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-
-            try {
-                Paciente paciente = new Paciente();
-                paciente.setId(idPacienteSelecionado);
-                paciente.setNome(txtNome.getText());
-                paciente.setCpf(txtCpf.getText());
-                
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                paciente.setDataNascimento(LocalDate.parse(txtDataNascimento.getText(), formatter));
-                
-                pacienteDAO.atualizar(paciente);
-                
-                JOptionPane.showMessageDialog(this, "Paciente atualizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                
-                carregarDadosTabela();
-                
-                txtNome.setText("");
-                txtCpf.setText("");
-                txtDataNascimento.setText("");
-                idPacienteSelecionado = 0;
-
-            } catch (DateTimeParseException ex) {
-                JOptionPane.showMessageDialog(this, "Formato de data inválido. Use DD/MM/AAAA.", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
-            }
+            
+            long idParaDeletar = (long) modeloTabela.getValueAt(selectedRow, 0);
+            String nomePaciente = (String) modeloTabela.getValueAt(selectedRow, 1);
+            
+            int resposta = JOptionPane.showConfirmDialog(
+                    this,
+                    "Tem certeza que deseja deletar o paciente: " + nomePaciente + "?",
+                    "Confirmação de Deleção",
+                    JOptionPane.YES_NO_OPTION
+            );
+            
+            if (resposta == JOptionPane.YES_OPTION) {
+                pacienteDAO.deletar(idParaDeletar);
+                JOptionPane.showMessageDialog(this, "Paciente deletado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                carregarDadosTabela();             }
         });
     }
 
     private void carregarDadosTabela() {
         modeloTabela.setRowCount(0);
         List<Paciente> pacientes = pacienteDAO.listarTodos();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         for (Paciente p : pacientes) {
             Object[] rowData = {

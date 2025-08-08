@@ -16,6 +16,7 @@ public class JanelaDeletarPaciente extends JDialog {
     private JTable tabelaPacientes;
     private DefaultTableModel modeloTabela;
     private JButton btnDeletar;
+    private JButton btnSair;
     private PacienteDAO pacienteDAO;
     
     public JanelaDeletarPaciente(JFrame owner) {
@@ -38,6 +39,11 @@ public class JanelaDeletarPaciente extends JDialog {
         btnDeletar = new JButton("Deletar Selecionado");
         btnDeletar.setBounds(150, 220, 180, 30);
         add(btnDeletar);
+        
+        btnSair = new JButton("Sair");
+        btnSair.setBounds(340, 220, 80, 30);
+        add(btnSair);
+        btnSair.addActionListener(e -> dispose());
         
         carregarDadosTabela();
 

@@ -1,98 +1,75 @@
 package prontuario.gui;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class TelaPrincipal extends JFrame {
 
-	public TelaPrincipal() {
-		super("Sistema de Prontuário Médico");
+    public TelaPrincipal() {
+        super("Sistema de Prontuário Médico");
 
-		this.setSize(800, 600);
-		this.setLocationRelativeTo(null);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(800, 600);
+        this.setLocationRelativeTo(null);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLayout(new BorderLayout());
 
-		JMenuBar menuBar = new JMenuBar();
+        JMenuBar menuBar = new JMenuBar();
 
-		JMenu menuPaciente = new JMenu("Pacientes");
-		JMenuItem itemNovoPaciente = new JMenuItem("Novo");
-		JMenuItem itemEditarPaciente = new JMenuItem("Editar");
-		JMenuItem itemLocalizarPaciente = new JMenuItem("Localizar");
-		JMenuItem itemExcluirPaciente = new JMenuItem("Excluir");
-		menuPaciente.add(itemNovoPaciente);
-		menuPaciente.add(itemEditarPaciente);
-		menuPaciente.add(itemLocalizarPaciente);
-		menuPaciente.add(itemExcluirPaciente);
+        JMenu menuPaciente = new JMenu("Pacientes");
+        JMenuItem itemNovoPaciente = new JMenuItem("Novo");
+        JMenuItem itemEditarPaciente = new JMenuItem("Editar");
+        JMenuItem itemLocalizarPaciente = new JMenuItem("Localizar");
+        JMenuItem itemExcluirPaciente = new JMenuItem("Excluir");
 
-		itemNovoPaciente.addActionListener(e -> {
-			JanelaNovoPaciente janelaNovo = new JanelaNovoPaciente(this);
-			janelaNovo.setVisible(true);
+        menuPaciente.add(itemNovoPaciente);
+        menuPaciente.add(itemEditarPaciente);
+        menuPaciente.add(itemLocalizarPaciente);
+        menuPaciente.add(itemExcluirPaciente);
 
-			itemEditarPaciente.addActionListener(e1 -> {
-				JanelaEditarPaciente janelaEditar = new JanelaEditarPaciente(this);
-				janelaEditar.setVisible(true);
+        JMenu menuExame = new JMenu("Exames");
+        JMenuItem itemNovoExame = new JMenuItem("Novo");
+        JMenuItem itemEditarExame = new JMenuItem("Editar");
+        JMenuItem itemLocalizarExame = new JMenuItem("Localizar");
+        JMenuItem itemExcluirExame = new JMenuItem("Excluir");
 
-				itemLocalizarPaciente.addActionListener(e2 -> {
-					JanelaLocalizarPaciente janelaLocalizar = new JanelaLocalizarPaciente(this);
-					janelaLocalizar.setVisible(true);
+        menuExame.add(itemNovoExame);
+        menuExame.add(itemEditarExame);
+        menuExame.add(itemLocalizarExame);
+        menuExame.add(itemExcluirExame);
 
-					itemExcluirPaciente.addActionListener(e3 -> {
-						JanelaDeletarPaciente janelaDeletar = new JanelaDeletarPaciente(this);
-						janelaDeletar.setVisible(true);
+        JMenu menuSair = new JMenu("Sair");
+        JMenuItem itemSair = new JMenuItem("Sair da Aplicação");
+        menuSair.add(itemSair);
 
-					});
-				});
-			});
-		});
+        menuBar.add(menuPaciente);
+        menuBar.add(menuExame);
+        menuBar.add(menuSair);
+        this.setJMenuBar(menuBar);
 
-		JMenu menuExame = new JMenu("Exames");
-		JMenuItem itemNovoExame = new JMenuItem("Novo");
-		JMenuItem itemEditarExame = new JMenuItem("Editar");
-		JMenuItem itemLocalizarExame = new JMenuItem("Localizar");
-		JMenuItem itemExcluirExame = new JMenuItem("Excluir");
-		menuExame.add(itemNovoExame);
-		menuExame.add(itemEditarExame);
-		menuExame.add(itemLocalizarExame);
-		menuExame.add(itemExcluirExame);
+        JPanel painelCentral = new JPanel(new BorderLayout());
+        JLabel lblMensagem = new JLabel("Bem-vindo ao Sistema de Prontuário Médico", SwingConstants.CENTER);
+        lblMensagem.setFont(new Font("Arial", Font.BOLD, 20));
+        painelCentral.add(lblMensagem, BorderLayout.CENTER);
+        this.add(painelCentral, BorderLayout.CENTER);
 
-		JMenu menuSair = new JMenu("Sair");
-		JMenuItem itemSair = new JMenuItem("Sair da Aplicação");
-		menuSair.add(itemSair);
+        itemNovoPaciente.addActionListener(e -> new JanelaNovoPaciente(this).setVisible(true));
+        itemEditarPaciente.addActionListener(e -> new JanelaEditarPaciente(this).setVisible(true));
+        itemLocalizarPaciente.addActionListener(e -> new JanelaLocalizarPaciente(this).setVisible(true));
+        itemExcluirPaciente.addActionListener(e -> new JanelaDeletarPaciente(this).setVisible(true));
 
-		menuBar.add(menuPaciente);
-		menuBar.add(menuExame);
-		menuBar.add(menuSair);
+        itemNovoExame.addActionListener(e -> new JanelaNovoExame(this).setVisible(true));
+        itemEditarExame.addActionListener(e -> new JanelaEditarExame(this).setVisible(true));
+        itemLocalizarExame.addActionListener(e -> new JanelaLocalizarExame(this).setVisible(true));
+        itemExcluirExame.addActionListener(e -> new JanelaDeletarExame(this).setVisible(true));
 
-		this.setJMenuBar(menuBar);
-
-		itemEditarExame.addActionListener(e5 -> {
-			JanelaEditarExame janelaEditarExame = new JanelaEditarExame(this);
-			janelaEditarExame.setVisible(true);
-		});
-
-		itemNovoExame.addActionListener(e4 -> {
-			JanelaNovoExame janelaNovoExame = new JanelaNovoExame(this);
-			janelaNovoExame.setVisible(true);
-
-			itemLocalizarExame.addActionListener(e6 -> {
-				JanelaLocalizarExame janelaLocalizar = new JanelaLocalizarExame(this);
-				janelaLocalizar.setVisible(true);
-
-				
-
-				itemExcluirExame.addActionListener(e7 -> {
-					JanelaDeletarExame janelaDeletar = new JanelaDeletarExame(this);
-					janelaDeletar.setVisible(true);
-				});
-			});
-		});
-
-		itemSair.addActionListener(e -> {
-			int resposta = JOptionPane.showConfirmDialog(this, "Deseja realmente sair do sistema?",
-					"Confirmação de Saída", JOptionPane.YES_NO_OPTION);
-
-			if (resposta == JOptionPane.YES_OPTION) {
-				System.exit(0);
-			}
-		});
-	}
+        itemSair.addActionListener(e -> {
+            int resposta = JOptionPane.showConfirmDialog(this,
+                    "Deseja realmente sair do sistema?",
+                    "Confirmação de Saída",
+                    JOptionPane.YES_NO_OPTION);
+            if (resposta == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
+        });
+    }
 }

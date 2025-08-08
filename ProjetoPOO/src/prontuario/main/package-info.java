@@ -1,2 +1,2 @@
 package prontuario.main;
-//java -jar prontuario-app.jar
+//java -jar ProjetoPOO.jar

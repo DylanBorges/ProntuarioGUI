@@ -88,6 +88,12 @@ public class JanelaEditarExame extends JDialog {
         btnAtualizar = new JButton("Atualizar");
         btnAtualizar.setBounds(290, 400, 100, 30);
         add(btnAtualizar);
+        
+        JButton btnSair = new JButton("Sair");
+        btnSair.setBounds(400, 400, 100, 30);
+        add(btnSair);
+
+        btnSair.addActionListener(e -> dispose());
 
         carregarPacientesCombo();
         carregarDadosTabela();
